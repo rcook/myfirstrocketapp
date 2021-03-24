@@ -22,11 +22,12 @@ mod tests {
     use rocket_contrib::json::Json;
     use serde_json::json;
 
+    use self::helpers::*;
     use super::*;
     use crate::result::Result;
 
     #[test]
-    fn test_blah() -> Result<()> {
+    fn test_layout() -> Result<()> {
         let obj = Json(Foo {
             guid: "GUID".into(),
             name: "NAME".into(),
@@ -42,8 +43,15 @@ mod tests {
         Ok(())
     }
 
-    fn get_json_value(obj: Json<impl Serialize>) -> Result<serde_json::Value> {
-        let s = serde_json::to_string(&obj.into_inner())?;
-        Ok(serde_json::from_str(&s)?)
+    mod helpers {
+        use rocket_contrib::json::Json;
+        use serde::Serialize;
+
+        use crate::result::Result;
+
+        pub fn get_json_value(obj: Json<impl Serialize>) -> Result<serde_json::Value> {
+            let s = serde_json::to_string(&obj.into_inner())?;
+            Ok(serde_json::from_str(&s)?)
+        }
     }
 }
