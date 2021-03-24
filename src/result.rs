@@ -6,6 +6,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug, Clone)]
 pub enum Error {
+    #[allow(dead_code)]
     Client(String),
     Internal(&'static str, String),
 }
