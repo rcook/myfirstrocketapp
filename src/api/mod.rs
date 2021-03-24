@@ -6,4 +6,4 @@
 
 mod foo;
 
-pub use self::foo::Foo;
+pub use self::foo::{Foo, NewFoo};

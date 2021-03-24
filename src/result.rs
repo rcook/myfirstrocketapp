@@ -54,3 +54,9 @@ impl std::convert::From<std::option::NoneError> for Error {
         internal_error("Option", "Option was None")
     }
 }
+
+impl std::convert::From<uuid::Error> for Error {
+    fn from(error: uuid::Error) -> Self {
+        internal_error("Uuid", error.to_string())
+    }
+}

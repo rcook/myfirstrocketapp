@@ -22,8 +22,9 @@ fn main() {
             "/foo",
             routes![
                 foo_controller::can_fail,
-                foo_controller::get,
-                foo_controller::index
+                foo_controller::create,
+                foo_controller::index,
+                foo_controller::read
             ],
         )
         .launch();

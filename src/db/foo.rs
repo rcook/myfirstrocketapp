@@ -1,7 +1,17 @@
 use rusqlite::{params, Connection, OptionalExtension, Row, NO_PARAMS};
+use uuid::Uuid;
 
 use crate::object_model::Foo;
 use crate::result::Result;
+
+pub fn insert(conn: &Connection, name: &str) -> Result<Uuid> {
+    let guid = Uuid::new_v4();
+    conn.execute(
+        "INSERT INTO foos (guid, name) VALUES (?1, ?2)",
+        params![guid.to_string(), name],
+    )?;
+    Ok(guid)
+}
 
 pub fn all(conn: &Connection) -> Result<Vec<Foo>> {
     let mut stmt = conn.prepare("SELECT id, guid, name FROM foos")?;
@@ -11,9 +21,11 @@ pub fn all(conn: &Connection) -> Result<Vec<Foo>> {
     Ok(items)
 }
 
-pub fn by_guid(conn: &Connection, guid: &str) -> Result<Option<Foo>> {
+pub fn by_guid(conn: &Connection, guid: &Uuid) -> Result<Option<Foo>> {
     let mut stmt = conn.prepare("SELECT id, guid, name FROM foos WHERE guid = ?1")?;
-    let item_opt = stmt.query_row(params![guid], from_row).optional()?;
+    let item_opt = stmt
+        .query_row(params![guid.to_string()], from_row)
+        .optional()?;
     Ok(item_opt)
 }
 

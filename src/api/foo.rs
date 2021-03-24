@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::object_model;
 
@@ -6,6 +6,11 @@ use crate::object_model;
 pub struct Foo {
     guid: String,
     name: String,
+}
+
+#[derive(Deserialize)]
+pub struct NewFoo {
+    pub name: String,
 }
 
 impl std::convert::From<object_model::Foo> for Foo {
