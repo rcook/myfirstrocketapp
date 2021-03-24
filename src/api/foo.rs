@@ -1,16 +1,18 @@
 use serde::Serialize;
 
+use crate::object_model;
+
 #[derive(Serialize)]
 pub struct Foo {
     guid: String,
     name: String,
 }
 
-impl Foo {
-    pub fn new(guid: &str, name: &str) -> Self {
+impl std::convert::From<object_model::Foo> for Foo {
+    fn from(foo: object_model::Foo) -> Self {
         Self {
-            guid: guid.into(),
-            name: name.into(),
+            guid: foo.guid,
+            name: foo.name,
         }
     }
 }
