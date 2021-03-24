@@ -3,10 +3,12 @@
 #[macro_use]
 extern crate rocket;
 
-mod foo;
-mod foo_controller;
+mod api;
+mod controllers;
+mod object_model;
 mod result;
-mod root_controller;
+
+use crate::controllers::{foo_controller, root_controller};
 
 fn main() {
     rocket::ignite()

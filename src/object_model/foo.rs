@@ -1,9 +1,6 @@
-use serde::Serialize;
-
-#[derive(Serialize)]
 pub struct Foo {
-    id: i32,
-    name: String,
+    pub id: i32,
+    pub name: String,
 }
 
 impl Foo {
