@@ -43,6 +43,12 @@ impl std::convert::From<rusqlite::Error> for Error {
     }
 }
 
+impl std::convert::From<serde_json::Error> for Error {
+    fn from(error: serde_json::Error) -> Self {
+        internal_error("Serde", error.to_string())
+    }
+}
+
 impl std::convert::From<std::option::NoneError> for Error {
     fn from(_error: std::option::NoneError) -> Self {
         internal_error("Option", "Option was None")
