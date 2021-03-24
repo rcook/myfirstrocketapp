@@ -18,9 +18,14 @@ cargo install cargo-watch
 make
 ```
 
+### How I built this
+
+[Getting Started][rocket-getting-started]
+
 ## Licence
 
 [MIT License][licence]
 
 [cargo-installation]: https://doc.rust-lang.org/cargo/getting-started/installation.html
 [licence]: LICENSE
+[rocket-getting-started]: https://rocket.rs/v0.4/guide/getting-started/
