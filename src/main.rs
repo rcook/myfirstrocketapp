@@ -4,21 +4,13 @@
 extern crate rocket;
 
 mod result;
-
-use crate::result::{internal_error_result, Result};
-
-#[get("/")]
-fn index() -> Result<&'static str> {
-    Ok("Hello, world!")
-}
-
-#[get("/can-fail")]
-fn can_fail() -> Result<&'static str> {
-    internal_error_result("Facility", "Message")
-}
+mod root_controller;
 
 fn main() {
     rocket::ignite()
-        .mount("/", routes![index, can_fail])
+        .mount(
+            "/",
+            routes![root_controller::index, root_controller::can_fail],
+        )
         .launch();
 }
