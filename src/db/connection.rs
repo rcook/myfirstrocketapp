@@ -1,8 +1,8 @@
 use dirs::home_dir;
 use rusqlite::Connection;
 
-use super::migrations::run_migrations;
 use crate::result::Result;
+use super::migrations::run_migrations;
 
 pub fn open_db() -> Result<Connection> {
     let d = home_dir()?;
