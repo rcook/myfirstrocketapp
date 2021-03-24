@@ -1,10 +1,12 @@
 #![feature(proc_macro_hygiene, decl_macro)]
+#![feature(try_trait)]
 
 #[macro_use]
 extern crate rocket;
 
 mod api;
 mod controllers;
+mod db;
 mod object_model;
 mod result;
 
