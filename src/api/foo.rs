@@ -27,6 +27,20 @@ mod tests {
     use crate::result::Result;
 
     #[test]
+    fn test_from() {
+        let result = Foo::from(object_model::Foo::new(100, "GUID", "NAME"));
+        assert_eq!("GUID", result.guid);
+        assert_eq!("NAME", result.name)
+    }
+
+    #[test]
+    fn test_into() {
+        let result: Foo = object_model::Foo::new(100, "GUID", "NAME").into();
+        assert_eq!("GUID", result.guid);
+        assert_eq!("NAME", result.name)
+    }
+
+    #[test]
     fn test_layout() -> Result<()> {
         let obj = Json(Foo {
             guid: "GUID".into(),
