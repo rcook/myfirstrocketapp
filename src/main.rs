@@ -8,6 +8,7 @@ extern crate rocket;
 extern crate rocket_contrib;
 
 mod api;
+mod app;
 mod connection_init;
 mod controllers;
 mod db;
