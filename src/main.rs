@@ -21,10 +21,11 @@ fn main() {
         .mount(
             "/foo",
             routes![
-                foo_controller::can_fail,
                 foo_controller::create,
+                foo_controller::delete,
                 foo_controller::index,
-                foo_controller::read
+                foo_controller::read,
+                foo_controller::update
             ],
         )
         .launch();

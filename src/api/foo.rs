@@ -9,7 +9,12 @@ pub struct Foo {
 }
 
 #[derive(Deserialize)]
-pub struct NewFoo {
+pub struct FooCreate {
+    pub name: String,
+}
+
+#[derive(Deserialize)]
+pub struct FooUpdate {
     pub name: String,
 }
 
