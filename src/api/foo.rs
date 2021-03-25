@@ -48,8 +48,8 @@ mod tests {
     #[test]
     fn test_layout() -> Result<()> {
         let obj = Json(Foo {
-            guid: "GUID".into(),
-            name: "NAME".into(),
+            guid: String::from("GUID"),
+            name: String::from("NAME"),
         });
         let value = get_json_value(obj)?;
         assert_eq!(

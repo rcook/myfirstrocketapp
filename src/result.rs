@@ -1,13 +1,25 @@
 use rocket::http::Status;
 use rocket::request::Request;
 use rocket::response::Responder;
+use std::fmt::{Display, Formatter};
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-#[derive(Debug, Clone)]
+#[derive(Clone, Debug)]
 pub enum Error {
     NotFound,
     Internal(&'static str, String),
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+        match self {
+            Error::NotFound => write!(f, "NotFound"),
+            Error::Internal(facility, message) => {
+                write!(f, "facility={} message={}", facility, message)
+            }
+        }
+    }
 }
 
 impl<'r> Responder<'r> for Error {
@@ -19,44 +31,34 @@ impl<'r> Responder<'r> for Error {
     }
 }
 
-pub fn not_found_result<T>() -> Result<T> {
+pub fn not_found<T>() -> Result<T> {
     Err(Error::NotFound)
 }
 
-pub fn internal_error<S>(facility: &'static str, message: S) -> Error
-where
-    S: Into<String>,
-{
-    Error::Internal(facility, message.into())
-}
-
-pub fn internal_error_result<T, S>(facility: &'static str, message: S) -> Result<T>
-where
-    S: Into<String>,
-{
-    Err(internal_error(facility, message))
+pub fn internal_error<T>(facility: &'static str, message: impl Into<String>) -> Result<T> {
+    Err(Error::Internal(facility, message.into()))
 }
 
 impl std::convert::From<rusqlite::Error> for Error {
     fn from(error: rusqlite::Error) -> Self {
-        internal_error("Rusqlite", error.to_string())
+        Error::Internal("rusqlite", error.to_string())
     }
 }
 
 impl std::convert::From<serde_json::Error> for Error {
     fn from(error: serde_json::Error) -> Self {
-        internal_error("Serde", error.to_string())
+        Error::Internal("serde", error.to_string())
     }
 }
 
 impl std::convert::From<std::option::NoneError> for Error {
     fn from(_error: std::option::NoneError) -> Self {
-        internal_error("Option", "Option was None")
+        Error::Internal("option", String::from("Option was None"))
     }
 }
 
 impl std::convert::From<uuid::Error> for Error {
     fn from(error: uuid::Error) -> Self {
-        internal_error("Uuid", error.to_string())
+        Error::Internal("uuid", error.to_string())
     }
 }

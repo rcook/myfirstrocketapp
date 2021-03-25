@@ -1,4 +1,4 @@
-use crate::result::{internal_error_result, Result};
+use crate::result::{internal_error, Result};
 
 #[get("/")]
 pub fn index() -> Result<&'static str> {
@@ -7,5 +7,5 @@ pub fn index() -> Result<&'static str> {
 
 #[get("/can-fail")]
 pub fn can_fail() -> Result<&'static str> {
-    internal_error_result("Facility", "Message")
+    internal_error("facility", "message")
 }

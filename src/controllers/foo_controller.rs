@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use crate::api::{Foo, NewFoo};
 use crate::db::{foo, open_db};
-use crate::result::{internal_error_result, not_found_result, Result};
+use crate::result::{internal_error, not_found, Result};
 
 #[get("/")]
 pub fn index() -> Result<Json<Vec<Foo>>> {
@@ -23,7 +23,7 @@ pub fn read(guid_str: String) -> Result<Json<Foo>> {
     let item = foo::by_guid(&conn, &guid)?;
 
     // Translate the internal Foo structure to its API equivalent
-    item.map_or_else(|| not_found_result(), |x| Ok(Json(x.into())))
+    item.map_or_else(|| not_found(), |x| Ok(Json(x.into())))
 }
 
 #[post("/", format = "application/json", data = "<foo>")]
@@ -36,5 +36,5 @@ pub fn create(foo: Json<NewFoo>) -> Result<Json<String>> {
 
 #[get("/can-fail")]
 pub fn can_fail() -> Result<&'static str> {
-    internal_error_result("Facility", "Message")
+    internal_error("facility", "message")
 }

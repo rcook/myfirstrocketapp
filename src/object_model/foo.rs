@@ -5,7 +5,7 @@ pub struct Foo {
 }
 
 impl Foo {
-    pub fn new(id: i64, guid: &str, name: &str) -> Self {
+    pub fn new(id: i64, guid: impl Into<String>, name: impl Into<String>) -> Self {
         Self {
             id: id,
             guid: guid.into(),
