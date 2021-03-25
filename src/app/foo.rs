@@ -1,99 +1,69 @@
-use rocket_contrib::json::Json;
+use rusqlite::Connection;
 
-use crate::api::foo::requests::{FooCreate, FooUpdate};
-use crate::api::foo::responses::Foo;
 use crate::db;
 use crate::guid::Guid;
-use crate::result::{not_found, Result};
+use crate::object_model::Foo;
+use crate::result::Result;
 
-pub fn create(conn: &rusqlite::Connection, body: Json<FooCreate>) -> Result<Json<Guid>> {
-    let item = body.into_inner();
-    let guid = db::foo::insert(&conn, &item.name)?;
-    Ok(Json(guid))
+pub fn create(conn: &Connection, name: &str) -> Result<Guid> {
+    Ok(db::foo::insert(&conn, name)?)
 }
 
-pub fn delete(conn: &rusqlite::Connection, guid: Guid) -> Result<()> {
+pub fn delete(conn: &Connection, guid: Guid) -> Result<()> {
     db::foo::delete(&conn, &guid)
 }
 
-pub fn index(conn: &rusqlite::Connection) -> Result<Json<Vec<Foo>>> {
-    let items = db::foo::all(conn)?;
-    Ok(Json(items.into_iter().map(Foo::from).collect()))
+pub fn index(conn: &Connection) -> Result<Vec<Foo>> {
+    Ok(db::foo::all(conn)?)
 }
 
-pub fn read(conn: &rusqlite::Connection, guid: Guid) -> Result<Json<Foo>> {
-    let item = db::foo::by_guid(&conn, &guid)?;
-    item.map_or_else(|| not_found(), |x| Ok(Json(x.into())))
+pub fn read(conn: &Connection, guid: Guid) -> Result<Option<Foo>> {
+    Ok(db::foo::by_guid(&conn, &guid)?)
 }
 
-pub fn update(conn: &rusqlite::Connection, guid: Guid, body: Json<FooUpdate>) -> Result<()> {
-    let item = body.into_inner();
-    db::foo::update(&conn, &guid, &item.name)
+pub fn update(conn: &Connection, guid: Guid, name: &str) -> Result<()> {
+    db::foo::update(&conn, &guid, name)
 }
 
 #[cfg(test)]
 mod tests {
+    use rusqlite::Connection;
+
     use super::*;
-    use crate::api::foo::requests::FooCreate;
     use crate::db::run_migrations;
     use crate::result::Result;
 
     #[test]
     fn test_basics_() -> Result<()> {
-        let conn = rusqlite::Connection::open_in_memory()?;
+        let conn = Connection::open_in_memory()?;
         run_migrations(&conn)?;
 
         assert!(index(&conn)?.is_empty());
 
-        let guid0 = create(
-            &conn,
-            Json(FooCreate {
-                name: String::from("NAME0"),
-            }),
-        )?
-        .into_inner();
-        let guid1 = create(
-            &conn,
-            Json(FooCreate {
-                name: String::from("NAME1"),
-            }),
-        )?
-        .into_inner();
+        let guid0 = create(&conn, "NAME0")?;
+        let guid1 = create(&conn, "NAME1")?;
 
         assert_eq!(2, index(&conn)?.len());
-        assert_eq!("NAME0", read(&conn, guid0)?.into_inner().name);
-        assert_eq!("NAME1", read(&conn, guid1)?.into_inner().name);
+        assert_eq!("NAME0", read(&conn, guid0)??.name);
+        assert_eq!("NAME1", read(&conn, guid1)??.name);
 
         delete(&conn, guid0)?;
 
         assert_eq!(1, index(&conn)?.len());
-        assert!(read(&conn, guid0).is_err());
-        assert_eq!("NAME1", read(&conn, guid1)?.into_inner().name);
+        assert!(read(&conn, guid0)?.is_none());
+        assert_eq!("NAME1", read(&conn, guid1)??.name);
 
-        assert!(update(
-            &conn,
-            guid0,
-            Json(FooUpdate {
-                name: String::from("UPDATED-NAME0")
-            })
-        )
-        .is_err());
+        assert!(update(&conn, guid0, "UPDATED-NAME0").is_err());
 
         assert_eq!(1, index(&conn)?.len());
-        assert!(read(&conn, guid0).is_err());
-        assert_eq!("NAME1", read(&conn, guid1)?.into_inner().name);
+        assert!(read(&conn, guid0)?.is_none());
+        assert_eq!("NAME1", read(&conn, guid1)??.name);
 
-        update(
-            &conn,
-            guid1,
-            Json(FooUpdate {
-                name: String::from("UPDATED-NAME1"),
-            }),
-        )?;
+        update(&conn, guid1, "UPDATED-NAME1")?;
 
         assert_eq!(1, index(&conn)?.len());
-        assert!(read(&conn, guid0).is_err());
-        assert_eq!("UPDATED-NAME1", read(&conn, guid1)?.into_inner().name);
+        assert!(read(&conn, guid0)?.is_none());
+        assert_eq!("UPDATED-NAME1", read(&conn, guid1)??.name);
 
         Ok(())
     }
