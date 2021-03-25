@@ -7,6 +7,7 @@ extern crate rocket;
 mod api;
 mod controllers;
 mod db;
+mod guid;
 mod object_model;
 mod result;
 

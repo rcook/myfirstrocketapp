@@ -1,6 +1,7 @@
 use rusqlite::{params, Connection, OptionalExtension, Row, NO_PARAMS};
 use uuid::Uuid;
 
+use crate::guid::Guid;
 use crate::object_model::Foo;
 use crate::result::Result;
 
@@ -12,10 +13,10 @@ pub fn all(conn: &Connection) -> Result<Vec<Foo>> {
     Ok(items)
 }
 
-pub fn by_guid(conn: &Connection, guid: &Uuid) -> Result<Option<Foo>> {
+pub fn by_guid(conn: &Connection, guid: &Guid) -> Result<Option<Foo>> {
     let mut stmt = conn.prepare("SELECT id, guid, name FROM foos WHERE guid = ?1")?;
     let item_opt = stmt
-        .query_row(params![guid.to_string()], from_row)
+        .query_row(params![guid.0.to_string()], from_row)
         .optional()?;
     Ok(item_opt)
 }
