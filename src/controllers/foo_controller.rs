@@ -1,5 +1,4 @@
 use rocket_contrib::json::Json;
-use uuid::Uuid;
 
 use crate::api::{Foo, FooCreate, FooUpdate};
 use crate::db::{foo, open_db};
@@ -7,11 +6,11 @@ use crate::guid::Guid;
 use crate::result::{not_found, Result};
 
 #[post("/", format = "application/json", data = "<body>")]
-pub fn create(body: Json<FooCreate>) -> Result<Json<String>> {
+pub fn create(body: Json<FooCreate>) -> Result<Json<Guid>> {
     let item = body.into_inner();
     let conn = open_db()?;
     let guid = foo::insert(&conn, &item.name)?;
-    Ok(Json(guid.to_string()))
+    Ok(Json(guid))
 }
 
 #[delete("/<guid>")]

@@ -1,5 +1,4 @@
 use rusqlite::{params, Connection, OptionalExtension, Row, NO_PARAMS};
-use uuid::Uuid;
 
 use crate::guid::Guid;
 use crate::object_model::Foo;
@@ -15,33 +14,28 @@ pub fn all(conn: &Connection) -> Result<Vec<Foo>> {
 
 pub fn by_guid(conn: &Connection, guid: &Guid) -> Result<Option<Foo>> {
     let mut stmt = conn.prepare("SELECT id, guid, name FROM foos WHERE guid = ?1")?;
-    let item_opt = stmt
-        .query_row(params![guid.0.to_string()], from_row)
-        .optional()?;
+    let item_opt = stmt.query_row(params![guid], from_row).optional()?;
     Ok(item_opt)
 }
 
-pub fn delete(conn: &Connection, guid: &Uuid) -> Result<()> {
-    conn.execute(
-        "DELETE FROM foos WHERE guid = ?1",
-        params![guid.to_string()],
-    )?;
+pub fn delete(conn: &Connection, guid: &Guid) -> Result<()> {
+    conn.execute("DELETE FROM foos WHERE guid = ?1", params![guid])?;
     Ok(())
 }
 
-pub fn insert(conn: &Connection, name: &str) -> Result<Uuid> {
-    let guid = Uuid::new_v4();
+pub fn insert(conn: &Connection, name: &str) -> Result<Guid> {
+    let guid = Guid::new_v4();
     conn.execute(
         "INSERT INTO foos (guid, name) VALUES (?1, ?2)",
-        params![guid.to_string(), name],
+        params![guid, name],
     )?;
     Ok(guid)
 }
 
-pub fn update(conn: &Connection, guid: &Uuid, name: &str) -> Result<()> {
+pub fn update(conn: &Connection, guid: &Guid, name: &str) -> Result<()> {
     conn.execute(
         "UPDATE foos SET name = ?1 WHERE guid = ?2",
-        params![name, guid.to_string()],
+        params![name, guid],
     )?;
     Ok(())
 }
@@ -49,7 +43,7 @@ pub fn update(conn: &Connection, guid: &Uuid, name: &str) -> Result<()> {
 fn from_row(row: &Row) -> rusqlite::Result<Foo> {
     Ok(Foo::new(
         row.get(0)?,
-        &row.get::<_, String>(1)?,
+        row.get(1)?,
         &row.get::<_, String>(2)?,
     ))
 }

@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
 
+use crate::guid::Guid;
 use crate::object_model;
 
 #[derive(Serialize)]
 pub struct Foo {
-    guid: String,
+    guid: Guid,
     name: String,
 }
 
@@ -37,29 +38,34 @@ mod tests {
     use crate::result::Result;
 
     #[test]
-    fn test_from() {
-        let result = Foo::from(object_model::Foo::new(100, "GUID", "NAME"));
-        assert_eq!("GUID", result.guid);
-        assert_eq!("NAME", result.name)
+    fn test_from() -> Result<()> {
+        let guid = Guid::parse_str("e1fecf7f-4de7-4e7a-8c92-440b0b542030")?;
+        let result = Foo::from(object_model::Foo::new(100, guid, "NAME"));
+        assert_eq!(guid, result.guid);
+        assert_eq!("NAME", result.name);
+        Ok(())
     }
 
     #[test]
-    fn test_into() {
-        let result: Foo = object_model::Foo::new(100, "GUID", "NAME").into();
-        assert_eq!("GUID", result.guid);
-        assert_eq!("NAME", result.name)
+    fn test_into() -> Result<()> {
+        let guid = Guid::parse_str("e1fecf7f-4de7-4e7a-8c92-440b0b542030")?;
+        let result: Foo = object_model::Foo::new(100, guid, "NAME").into();
+        assert_eq!(guid, result.guid);
+        assert_eq!("NAME", result.name);
+        Ok(())
     }
 
     #[test]
     fn test_layout() -> Result<()> {
+        let guid = Guid::parse_str("e1fecf7f-4de7-4e7a-8c92-440b0b542030")?;
         let obj = Json(Foo {
-            guid: String::from("GUID"),
+            guid: guid,
             name: String::from("NAME"),
         });
         let value = get_json_value(obj)?;
         assert_eq!(
             json!({
-                "guid": "GUID",
+                "guid": "e1fecf7f-4de7-4e7a-8c92-440b0b542030",
                 "name": "NAME"
             }),
             value
