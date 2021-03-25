@@ -1,7 +1,8 @@
 use rocket::Route;
 use rocket_contrib::json::Json;
 
-use super::foo::{Foo, FooCreate, FooUpdate};
+use super::requests::{FooCreate, FooUpdate};
+use super::responses::Foo;
 use crate::app::foo;
 use crate::db::Connection;
 use crate::guid::Guid;

@@ -25,6 +25,6 @@ fn rocket() -> Rocket {
     rocket::ignite()
         .attach(Connection::fairing())
         .attach(ConnectionInit::fairing())
-        .mount("/", api::root_controller::make_routes())
-        .mount("/foo", api::foo_controller::make_routes())
+        .mount("/", api::root::actions::make_routes())
+        .mount("/foo", api::foo::actions::make_routes())
 }

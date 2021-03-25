@@ -5,5 +5,4 @@
 // details such as database IDs
 
 pub mod foo;
-pub mod foo_controller;
-pub mod root_controller;
+pub mod root;

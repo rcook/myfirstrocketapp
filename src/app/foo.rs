@@ -1,6 +1,7 @@
 use rocket_contrib::json::Json;
 
-use crate::api::foo::{Foo, FooCreate, FooUpdate};
+use crate::api::foo::requests::{FooCreate, FooUpdate};
+use crate::api::foo::responses::Foo;
 use crate::db;
 use crate::guid::Guid;
 use crate::result::{not_found, Result};
@@ -33,7 +34,7 @@ pub fn update(conn: &rusqlite::Connection, guid: Guid, body: Json<FooUpdate>) ->
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api::foo::FooCreate;
+    use crate::api::foo::requests::FooCreate;
     use crate::db::run_migrations;
     use crate::result::Result;
 

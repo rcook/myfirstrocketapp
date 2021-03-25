@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 
 use crate::guid::Guid;
 use crate::object_model;
@@ -6,16 +6,6 @@ use crate::object_model;
 #[derive(Serialize)]
 pub struct Foo {
     pub guid: Guid,
-    pub name: String,
-}
-
-#[derive(Deserialize)]
-pub struct FooCreate {
-    pub name: String,
-}
-
-#[derive(Deserialize)]
-pub struct FooUpdate {
     pub name: String,
 }
 
