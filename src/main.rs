@@ -11,9 +11,12 @@ mod guid;
 mod object_model;
 mod result;
 
+use rocket::Rocket;
+
 use crate::controllers::{foo_controller, root_controller};
 
-fn main() {
+#[launch]
+fn rocket() -> Rocket {
     rocket::ignite()
         .mount(
             "/",
@@ -29,5 +32,4 @@ fn main() {
                 foo_controller::update
             ],
         )
-        .launch();
 }

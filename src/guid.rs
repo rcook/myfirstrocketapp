@@ -1,4 +1,3 @@
-use rocket::http::RawStr;
 use rocket::request::FromParam;
 use rusqlite::types::{FromSql, FromSqlError, FromSqlResult, ToSql, ToSqlOutput, ValueRef};
 use serde::{Serialize, Serializer};
@@ -44,10 +43,10 @@ impl ToSql for Guid {
     }
 }
 
-impl<'r> FromParam<'r> for Guid {
+impl<'a> FromParam<'a> for Guid {
     type Error = Error;
 
-    fn from_param(param: &'r RawStr) -> std::result::Result<Self, Self::Error> {
+    fn from_param(param: &'a str) -> std::result::Result<Self, Self::Error> {
         Ok(Guid(Uuid::parse_str(&param)?))
     }
 }

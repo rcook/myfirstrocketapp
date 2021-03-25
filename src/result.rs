@@ -22,8 +22,8 @@ impl Display for Error {
     }
 }
 
-impl<'r> Responder<'r> for Error {
-    fn respond_to(self, _: &Request) -> rocket::response::Result<'r> {
+impl<'r> Responder<'r, 'static> for Error {
+    fn respond_to(self, _: &'r Request<'_>) -> rocket::response::Result<'static> {
         match self {
             Error::NotFound => Err(Status::NotFound),
             Error::Internal(_facility, _message) => Err(Status::InternalServerError),
