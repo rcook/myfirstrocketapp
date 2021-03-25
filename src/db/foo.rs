@@ -2,7 +2,7 @@ use rusqlite::{params, Connection, OptionalExtension, Row, NO_PARAMS};
 
 use crate::guid::Guid;
 use crate::object_model::Foo;
-use crate::result::Result;
+use crate::result::{internal_error, Result};
 
 pub fn all(conn: &Connection) -> Result<Vec<Foo>> {
     let mut stmt = conn.prepare("SELECT id, guid, name FROM foos")?;
@@ -33,11 +33,15 @@ pub fn insert(conn: &Connection, name: &str) -> Result<Guid> {
 }
 
 pub fn update(conn: &Connection, guid: &Guid, name: &str) -> Result<()> {
-    conn.execute(
+    let count = conn.execute(
         "UPDATE foos SET name = ?1 WHERE guid = ?2",
         params![name, guid],
     )?;
-    Ok(())
+    match count {
+        0 => internal_error("rusqlite", "no row was updated"),
+        1 => Ok(()),
+        _ => internal_error("rusqlite", "more than one row was updated"),
+    }
 }
 
 fn from_row(row: &Row) -> rusqlite::Result<Foo> {

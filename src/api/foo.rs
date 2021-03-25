@@ -5,8 +5,8 @@ use crate::object_model;
 
 #[derive(Serialize)]
 pub struct Foo {
-    guid: Guid,
-    name: String,
+    pub guid: Guid,
+    pub name: String,
 }
 
 #[derive(Deserialize)]
