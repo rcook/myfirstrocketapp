@@ -14,6 +14,7 @@ impl Guid {
         Self(Uuid::new_v4())
     }
 
+    #[allow(dead_code)]
     pub fn parse_str(s: &str) -> Result<Self> {
         Ok(Uuid::parse_str(s).map(|x| Self(x))?)
     }
