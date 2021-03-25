@@ -10,7 +10,6 @@ extern crate rocket_contrib;
 mod api;
 mod app;
 mod connection_init;
-mod controllers;
 mod db;
 mod guid;
 mod object_model;
@@ -18,8 +17,8 @@ mod result;
 
 use rocket::Rocket;
 
+use crate::api::{foo_controller, root_controller};
 use crate::connection_init::ConnectionInit;
-use crate::controllers::{foo_controller, root_controller};
 use crate::db::Connection;
 
 #[launch]

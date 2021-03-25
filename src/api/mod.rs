@@ -4,6 +4,6 @@
 // not expose private information or implementation
 // details such as database IDs
 
-mod foo;
-
-pub use self::foo::{Foo, FooCreate, FooUpdate};
+pub mod foo;
+pub mod foo_controller;
+pub mod root_controller;

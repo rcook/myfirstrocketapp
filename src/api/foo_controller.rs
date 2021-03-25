@@ -1,6 +1,6 @@
 use rocket_contrib::json::Json;
 
-use crate::api::{Foo, FooCreate, FooUpdate};
+use super::foo::{Foo, FooCreate, FooUpdate};
 use crate::app::foo;
 use crate::db::Connection;
 use crate::guid::Guid;
