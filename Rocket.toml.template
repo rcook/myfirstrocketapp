@@ -1,0 +1,2 @@
+[global.databases]
+sqlite3 = { url = "/path/to/myfirstrocketapp.db" }

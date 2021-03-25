@@ -2,6 +2,7 @@ use rusqlite::Connection;
 
 use crate::result::Result;
 
+#[allow(dead_code)]
 pub fn run_migrations(conn: &Connection) -> Result<()> {
     conn.execute_batch(
         "

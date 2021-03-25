@@ -4,6 +4,9 @@
 #[macro_use]
 extern crate rocket;
 
+#[macro_use]
+extern crate rocket_contrib;
+
 mod api;
 mod controllers;
 mod db;
@@ -14,10 +17,12 @@ mod result;
 use rocket::Rocket;
 
 use crate::controllers::{foo_controller, root_controller};
+use crate::db::Connection;
 
 #[launch]
 fn rocket() -> Rocket {
     rocket::ignite()
+        .attach(Connection::fairing())
         .mount(
             "/",
             routes![root_controller::can_fail, root_controller::index],
