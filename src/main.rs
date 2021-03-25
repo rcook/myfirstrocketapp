@@ -8,6 +8,7 @@ extern crate rocket;
 extern crate rocket_contrib;
 
 mod api;
+mod connection_init;
 mod controllers;
 mod db;
 mod guid;
@@ -16,6 +17,7 @@ mod result;
 
 use rocket::Rocket;
 
+use crate::connection_init::ConnectionInit;
 use crate::controllers::{foo_controller, root_controller};
 use crate::db::Connection;
 
@@ -23,6 +25,7 @@ use crate::db::Connection;
 fn rocket() -> Rocket {
     rocket::ignite()
         .attach(Connection::fairing())
+        .attach(ConnectionInit::fairing())
         .mount(
             "/",
             routes![root_controller::can_fail, root_controller::index],
