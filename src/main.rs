@@ -15,14 +15,14 @@ mod guid;
 mod object_model;
 mod result;
 
-use rocket::Rocket;
+use rocket::{ignite, Rocket};
 
 use crate::connection_init::ConnectionInit;
 use crate::db::Connection;
 
 #[launch]
 fn rocket() -> Rocket {
-    rocket::ignite()
+    ignite()
         .attach(Connection::fairing())
         .attach(ConnectionInit::fairing())
         .mount("/", api::root::make_routes())
