@@ -17,7 +17,6 @@ mod result;
 
 use rocket::Rocket;
 
-use crate::api::{foo_controller, root_controller};
 use crate::connection_init::ConnectionInit;
 use crate::db::Connection;
 
@@ -26,18 +25,6 @@ fn rocket() -> Rocket {
     rocket::ignite()
         .attach(Connection::fairing())
         .attach(ConnectionInit::fairing())
-        .mount(
-            "/",
-            routes![root_controller::can_fail, root_controller::index],
-        )
-        .mount(
-            "/foo",
-            routes![
-                foo_controller::create,
-                foo_controller::delete,
-                foo_controller::index,
-                foo_controller::read,
-                foo_controller::update
-            ],
-        )
+        .mount("/", api::root_controller::make_routes())
+        .mount("/foo", api::foo_controller::make_routes())
 }
