@@ -22,6 +22,16 @@ make
 
 [Getting Started][rocket-getting-started]
 
+### Running locally
+
+You'll need to create a `Rocket.toml` file in the root of this project:
+
+```bash
+cp Rocket.toml.template Rocket.toml
+```
+
+Then edit the `url` field under `sqlite3` to point to a path at which the app will create your SQLite3 database.
+
 ## Licence
 
 [MIT License][licence]
