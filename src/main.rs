@@ -11,6 +11,7 @@ mod api;
 mod app;
 mod connection_init;
 mod db;
+mod experiments;
 mod guid;
 mod object_model;
 mod result;
@@ -20,11 +21,16 @@ use rocket::{ignite, Rocket};
 use crate::connection_init::ConnectionInit;
 use crate::db::Connection;
 
-#[launch]
+//#[launch]
+#[allow(dead_code)]
 fn rocket() -> Rocket {
     ignite()
         .attach(Connection::fairing())
         .attach(ConnectionInit::fairing())
         .mount("/", api::root::make_routes())
         .mount("/foo", api::foo::make_routes())
+}
+
+fn main() -> result::Result<()> {
+    experiments::run_experiments()
 }
